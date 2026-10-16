@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#f7f4f1">
+<title>Vivi Shop – Quản lý đơn hàng</title>
+<style>
+:root{--ink:#292522;--muted:#817a74;--line:#eee8e2;--bg:#f7f4f1;--card:#fff;--accent:#8c5b72;--soft:#f4e9ee;--green:#287b5b;--red:#b94b4b}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--ink);font:15px -apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif}
+header{padding:22px 18px 14px;background:#fff;position:sticky;top:0;z-index:4;border-bottom:1px solid var(--line)}
+.brand{font-size:12px;letter-spacing:2px;color:var(--accent);font-weight:800}.headrow{display:flex;justify-content:space-between;align-items:center;margin-top:5px}h1{font-size:23px;margin:0}.sub{color:var(--muted);font-size:12px;margin-top:4px}
+main{max-width:760px;margin:auto;padding:16px 14px 95px}.tabs{position:fixed;bottom:0;left:0;right:0;background:#fff;border-top:1px solid var(--line);display:flex;justify-content:space-around;padding:9px 4px calc(9px + env(safe-area-inset-bottom));z-index:5}.tabs button{border:0;background:none;color:var(--muted);font-size:11px;padding:5px;min-width:68px}.tabs button b{display:block;font-size:19px;margin-bottom:2px}.tabs button.active{color:var(--accent);font-weight:700}
+.card{background:var(--card);border:1px solid var(--line);border-radius:17px;padding:15px;margin-bottom:13px;box-shadow:0 2px 9px #3b251008}.grid{display:grid;grid-template-columns:repeat(2,1fr);gap:10px}.stat{padding:14px;border-radius:14px;background:#fff;border:1px solid var(--line)}.stat small{color:var(--muted)}.stat strong{display:block;font-size:21px;margin-top:6px}
+h2{font-size:17px;margin:5px 0 13px}h3{font-size:14px;margin:0 0 10px}
+label{display:block;font-size:12px;color:var(--muted);margin:10px 0 5px}input,select,textarea{width:100%;border:1px solid #e7dfd8;border-radius:10px;padding:11px;background:#fff;font:inherit;color:var(--ink);outline:none}input:focus,select:focus,textarea:focus{border-color:var(--accent)}.row{display:grid;grid-template-columns:1fr 1fr;gap:9px}.row3{display:grid;grid-template-columns:1.3fr .7fr .9fr;gap:7px}
+button.primary,.btn{border:0;border-radius:11px;background:var(--accent);color:white;padding:12px 15px;font-weight:700;font-size:14px;cursor:pointer}.btn.secondary{background:var(--soft);color:var(--accent)}.btn.ghost{background:#f5f2ef;color:var(--ink)}.btn.danger{background:#faeeee;color:var(--red)}.full{width:100%;margin-top:13px}
+.actions{display:flex;gap:8px;flex-wrap:wrap;margin-top:12px}.actions .btn{flex:1}
+.itemline{display:grid;grid-template-columns:1fr 72px 92px 28px;gap:6px;align-items:end;margin:9px 0}.itemline label{margin-top:0}.itemline input{padding:10px 7px}.remove{border:0;background:#faeeee;color:var(--red);border-radius:8px;height:40px;font-size:18px}
+.totalbox{background:#faf6f8;border-radius:13px;padding:13px;margin-top:13px}.totalrow{display:flex;justify-content:space-between;margin:5px 0}.grand{font-size:20px;font-weight:800;color:var(--accent);border-top:1px solid #eadde3;padding-top:10px;margin-top:9px}
+.order{display:flex;justify-content:space-between;gap:10px;align-items:flex-start}.order strong{display:block}.meta{font-size:12px;color:var(--muted);margin-top:5px}.pill{display:inline-block;background:#f1eee9;border-radius:20px;padding:5px 9px;font-size:11px;color:#6d6259}.pill.green{background:#e7f4ed;color:var(--green)}.empty{text-align:center;color:var(--muted);padding:28px 8px}.muted{color:var(--muted)}.hidden{display:none!important}.sectionhead{display:flex;justify-content:space-between;align-items:center;margin:5px 2px 12px}.sectionhead h2{margin:0}
+.bill{background:#fff;padding:22px;border:1px dashed #d7c9ce;border-radius:12px}.bill h2{text-align:center;color:var(--accent);font-size:21px}.bill .center{text-align:center}.bill table{width:100%;border-collapse:collapse;font-size:13px;margin:14px 0}.bill td,.bill th{border-bottom:1px solid var(--line);padding:8px 3px;text-align:left}.bill .right{text-align:right}
+.smallnote{font-size:11px;color:var(--muted);line-height:1.5;margin-top:12px}
+@media(min-width:650px){main{padding-top:22px}.grid{grid-template-columns:repeat(4,1fr)}}
+@media print{header,.tabs,.no-print{display:none!important}body{background:#fff}main{padding:0;max-width:none}.card{box-shadow:none;border:0;padding:0}.bill{border:0;padding:0}}
+</style>
+</head>
+<body>
+<header><div class="brand">VIVI SHOP · JAPAN</div><div class="headrow"><h1 id="pageTitle">Tổng quan</h1><span class="pill">JPY ¥</span></div><div class="sub">Quản lý đơn hàng · Khách hàng · Hàng hóa</div></header>
+<main>
+<section id="dashboard">
+ <div class="grid">
+  <div class="stat"><small>Đơn hàng</small><strong id="statOrders">0</strong></div>
+  <div class="stat"><small>Doanh thu</small><strong id="statRevenue">¥0</strong></div>
+  <div class="stat"><small>Tiền vốn</small><strong id="statCost">¥0</strong></div>
+  <div class="stat"><small>Lãi gộp tạm tính</small><strong id="statProfit">¥0</strong></div>
+ </div>
+ <div class="card" style="margin-top:14px"><div class="sectionhead"><h2>Đơn gần đây</h2><button class="btn secondary" onclick="showTab('orders')">Xem tất cả</button></div><div id="recent"></div></div>
+ <div class="card"><h3>Bắt đầu nhanh</h3><p class="muted" style="font-size:13px">Tạo bill bằng Yên Nhật, thêm mã hàng/màu/size, ghi phí ship và tracking rồi gửi khách.</p><button class="primary full" onclick="newOrder()">＋ Tạo đơn hàng mới</button></div>
+</section>
+
+<section id="orders" class="hidden">
+ <div class="sectionhead"><h2>Danh sách đơn</h2><button class="primary" onclick="newOrder()">＋ Tạo đơn</button></div>
+ <input id="orderSearch" placeholder="Tìm tên khách, mã đơn, tracking…" oninput="renderOrders()">
+ <div id="orderList" style="margin-top:12px"></div>
+</section>
+
+<section id="create" class="hidden">
+ <div class="card">
+  <h2 id="formTitle">Tạo đơn hàng</h2>
+  <div class="row"><div><label>Tên khách hàng *</label><input id="customer" placeholder="Ví dụ: Nana Đăng"></div><div><label>Số điện thoại / LINE</label><input id="contact" placeholder="Thông tin liên hệ"></div></div>
+  <div class="row"><div><label>Mã đơn</label><input id="orderCode" placeholder="Tự tạo nếu để trống"></div><div><label>Ngày đặt</label><input id="orderDate" type="date"></div></div>
+  <label>Sản phẩm trong đơn</label><div id="lines"></div>
+  <button class="btn secondary full" onclick="addLine()">＋ Thêm sản phẩm</button>
+  <div class="row"><div><label>Phí ship (¥)</label><input id="shipping" type="number" min="0" value="0" oninput="calc()"></div><div><label>Giảm giá (¥)</label><input id="discount" type="number" min="0" value="0" oninput="calc()"></div></div>
+  <div class="row"><div><label>Trạng thái</label><select id="status"><option>Chờ thanh toán</option><option>Đã thanh toán</option><option>Đã đặt hàng</option><option>Đang vận chuyển</option><option>Đã giao</option><option>Đã hủy</option></select></div><div><label>Mã tracking</label><input id="tracking" placeholder="Mã vận đơn"></div></div>
+  <label>Ghi chú</label><textarea id="note" rows="2" placeholder="Ví dụ: khách hẹn nhận hàng…"></textarea>
+  <div class="totalbox"><div class="totalrow"><span>Tiền hàng</span><b id="subtotal">¥0</b></div><div class="totalrow"><span>Tiền vốn (ước tính)</span><b id="costTotal">¥0</b></div><div class="totalrow grand"><span>Khách cần trả</span><span id="grandTotal">¥0</span></div></div>
+  <button class="primary full" onclick="saveOrder()">Lưu đơn hàng</button><button class="btn ghost full" onclick="showTab('orders')">Hủy</button>
+ </div>
+</section>
+
+<section id="products" class="hidden">
+ <div class="sectionhead"><h2>Kho sản phẩm</h2><button class="primary" onclick="toggleProductForm(true)">＋ Thêm</button></div>
+ <div class="card hidden" id="productForm"><h3>Thêm sản phẩm</h3><label>Tên sản phẩm</label><input id="pName" placeholder="Áo cardigan…"><div class="row"><div><label>Mã hàng</label><input id="pCode" placeholder="VD: CD01"></div><div><label>Màu / size</label><input id="pVariant" placeholder="Mint / S"></div></div><div class="row"><div><label>Giá vốn (¥)</label><input id="pCost" type="number" value="0"></div><div><label>Giá bán (¥)</label><input id="pPrice" type="number" value="0"></div></div><button class="primary full" onclick="saveProduct()">Lưu sản phẩm</button></div>
+ <div id="productList"></div>
+</section>
+
+<section id="customers" class="hidden">
+ <h2>Khách hàng</h2><div id="customerList"></div>
+</section>
+
+<section id="detail" class="hidden">
+ <div class="no-print actions"><button class="btn ghost" onclick="showTab('orders')">← Quay lại</button><button class="btn secondary" onclick="printBill()">In / Lưu PDF</button><button class="btn danger" onclick="deleteCurrent()">Xóa đơn</button></div>
+ <div id="billArea" class="bill"></div>
+ <div class="card no-print"><h3>Cập nhật đơn</h3><div class="row"><div><label>Trạng thái</label><select id="detailStatus"></select></div><div><label>Tracking</label><input id="detailTracking"></div></div><button class="primary full" onclick="updateCurrent()">Lưu cập nhật</button></div>
+</section>
+<div class="smallnote">Dữ liệu bản thử nghiệm được lưu trên trình duyệt của thiết bị này. Hãy sao lưu/xuất dữ liệu định kỳ; xóa dữ liệu trình duyệt có thể làm mất đơn hàng.</div>
+</main>
+<nav class="tabs">
+ <button class="active" data-tab="dashboard" onclick="showTab('dashboard')"><b>⌂</b>Tổng quan</button>
+ <button data-tab="orders" onclick="showTab('orders')"><b>▤</b>Đơn hàng</button>
+ <button data-tab="products" onclick="showTab('products')"><b>◇</b>Sản phẩm</button>
+ <button data-tab="customers" onclick="showTab('customers')"><b>♙</b>Khách hàng</button>
+</nav>
+<script>
+const KEY='vivi_shop_v1', statuses=['Chờ thanh toán','Đã thanh toán','Đã đặt hàng','Đang vận chuyển','Đã giao','Đã hủy'];
+let db=JSON.parse(localStorage.getItem(KEY)||'{"orders":[],"products":[]}'), editing=null,current=null;
+const yen=n=>'¥'+Number(n||0).toLocaleString('ja-JP');
+const esc=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+function persist(){localStorage.setItem(KEY,JSON.stringify(db));renderAll()}
+function showTab(t){document.querySelectorAll('main>section').forEach(s=>s.classList.add('hidden'));document.getElementById(t).classList.remove('hidden');document.querySelectorAll('.tabs button').forEach(b=>b.classList.toggle('active',b.dataset.tab===t));document.getElementById('pageTitle').textContent=({dashboard:'Tổng quan',orders:'Đơn hàng',products:'Sản phẩm',customers:'Khách hàng',create:'Tạo đơn hàng',detail:'Chi tiết bill'})[t]||t;if(t==='orders')renderOrders();if(t==='products')renderProducts();if(t==='customers')renderCustomers()}
+function addLine(item={}){let d=document.createElement('div');d.className='itemline';d.innerHTML=`<div><label>Tên / mã / màu / size</label><input class="li-name" placeholder="Áo cardigan · Mint · S" value="${esc(item.name||'')}"></div><div><label>SL</label><input class="li-qty" type="number" min="1" value="${item.qty||1}" oninput="calc()"></div><div><label>Giá bán ¥</label><input class="li-price" type="number" min="0" value="${item.price||0}" oninput="calc()"><label style="margin-top:4px">Giá vốn ¥</label><input class="li-cost" type="number" min="0" value="${item.cost||0}" oninput="calc()"></div><button class="remove" onclick="this.parentElement.remove();calc()">×</button>`;document.getElementById('lines').appendChild(d);calc()}
+function getLines(){return [...document.querySelectorAll('.itemline')].map(x=>({name:x.querySelector('.li-name').value,qty:+x.querySelector('.li-qty').value||1,price:+x.querySelector('.li-price').value||0,cost:+x.querySelector('.li-cost').value||0})).filter(x=>x.name.trim())}
+function calc(){let a=getLines(),sub=a.reduce((s,x)=>s+x.qty*x.price,0),cost=a.reduce((s,x)=>s+x.qty*x.cost,0);document.getElementById('subtotal').textContent=yen(sub);document.getElementById('costTotal').textContent=yen(cost);document.getElementById('grandTotal').textContent=yen(sub+(+document.getElementById('shipping').value||0)-(+document.getElementById('discount').value||0))}
+function newOrder(){editing=null;document.getElementById('formTitle').textContent='Tạo đơn hàng';['customer','contact','orderCode','tracking','note'].forEach(x=>document.getElementById(x).value='');document.getElementById('orderDate').value=new Date().toISOString().slice(0,10);document.getElementById('shipping').value=0;document.getElementById('discount').value=0;document.getElementById('status').value=statuses[0];document.getElementById('lines').innerHTML='';addLine();showTab('create')}
+function saveOrder(){let customer=document.getElementById('customer').value.trim(),items=getLines();if(!customer||!items.length){alert('Vui lòng nhập tên khách và ít nhất một sản phẩm.');return}let o={id:editing||('VV'+Date.now().toString().slice(-7)),customer,contact:document.getElementById('contact').value,code:document.getElementById('orderCode').value||('VV'+Date.now().toString().slice(-6)),date:document.getElementById('orderDate').value,items,shipping:+document.getElementById('shipping').value||0,discount:+document.getElementById('discount').value||0,status:document.getElementById('status').value,tracking:document.getElementById('tracking').value,note:document.getElementById('note').value};let i=db.orders.findIndex(x=>x.id===o.id);if(i>=0)db.orders[i]=o;else db.orders.unshift(o);persist();showTab('orders');openDetail(o.id)}
+function sum(o){return o.items.reduce((s,x)=>s+x.qty*x.price,0)}function cost(o){return o.items.reduce((s,x)=>s+x.qty*x.cost,0)}
+function renderOrders(){let q=(document.getElementById('orderSearch')?.value||'').toLowerCase(),a=db.orders.filter(o=>[o.customer,o.code,o.tracking].join(' ').toLowerCase().includes(q));document.getElementById('orderList').innerHTML=a.length?a.map(o=>`<div class="card order" onclick="openDetail('${o.id}')"><div><strong>${esc(o.customer)}</strong><div class="meta">${esc(o.code)} · ${esc(o.date)}<br>${o.items.length} sản phẩm · ${esc(o.tracking||'Chưa có tracking')}</div></div><div style="text-align:right"><b>${yen(sum(o)+o.shipping-o.discount)}</b><div class="meta"><span class="pill ${o.status==='Đã giao'?'green':''}">${esc(o.status)}</span></div></div></div>`).join(''):'<div class="empty">Chưa có đơn hàng.</div>'}
+function openDetail(id){current=id;let o=db.orders.find(x=>x.id===id);if(!o)return;document.getElementById('billArea').innerHTML=`<h2>VIVI SHOP</h2><div class="center muted">ORDER BILL · JAPAN</div><p><b>Khách hàng:</b> ${esc(o.customer)}<br><b>Liên hệ:</b> ${esc(o.contact||'—')}<br><b>Mã đơn:</b> ${esc(o.code)}<br><b>Ngày:</b> ${esc(o.date)}</p><table><thead><tr><th>Sản phẩm</th><th>SL</th><th class="right">Đơn giá</th><th class="right">T.tiền</th></tr></thead><tbody>${o.items.map(x=>`<tr><td>${esc(x.name)}</td><td>${x.qty}</td><td class="right">${yen(x.price)}</td><td class="right">${yen(x.qty*x.price)}</td></tr>`).join('')}</tbody></table><div class="totalrow"><span>Tiền hàng</span><b>${yen(sum(o))}</b></div><div class="totalrow"><span>Phí ship</span><b>${yen(o.shipping)}</b></div><div class="totalrow"><span>Giảm giá</span><b>−${yen(o.discount)}</b></div><div class="totalrow grand"><span>TỔNG CỘNG</span><span>${yen(sum(o)+o.shipping-o.discount)}</span></div><p><b>Trạng thái:</b> ${esc(o.status)}<br><b>Tracking:</b> ${esc(o.tracking||'—')}<br><b>Ghi chú:</b> ${esc(o.note||'—')}</p><div class="center muted">Cảm ơn bạn đã mua hàng ♡</div>`;document.getElementById('detailStatus').innerHTML=statuses.map(s=>`<option ${s===o.status?'selected':''}>${s}</option>`).join('');document.getElementById('detailTracking').value=o.tracking||'';showTab('detail')}
+function printBill(){window.print()}function updateCurrent(){let o=db.orders.find(x=>x.id===current);o.status=document.getElementById('detailStatus').value;o.tracking=document.getElementById('detailTracking').value;persist();openDetail(current)}function deleteCurrent(){if(confirm('Xóa đơn hàng này?')){db.orders=db.orders.filter(x=>x.id!==current);persist();showTab('orders')}}
+function toggleProductForm(v){document.getElementById('productForm').classList.toggle('hidden',!v)}
+function saveProduct(){let name=document.getElementById('pName').value.trim();if(!name){alert('Nhập tên sản phẩm');return}db.products.push({name,code:document.getElementById('pCode').value,variant:document.getElementById('pVariant').value,cost:+document.getElementById('pCost').value||0,price:+document.getElementById('pPrice').value||0});['pName','pCode','pVariant','pCost','pPrice'].forEach(x=>document.getElementById(x).value='');persist();toggleProductForm(false)}
+function renderProducts(){document.getElementById('productList').innerHTML=db.products.length?db.products.map((p,i)=>`<div class="card"><b>${esc(p.name)}</b><div class="meta">${esc(p.code)} · ${esc(p.variant)}</div><div class="totalrow"><span>Vốn ${yen(p.cost)}</span><b>Giá bán ${yen(p.price)}</b></div><button class="btn danger" onclick="db.products.splice(${i},1);persist()">Xóa</button></div>`).join(''):'<div class="empty">Chưa có sản phẩm. Bạn có thể thêm mã hàng, màu, size và giá vốn.</div>'}
+function renderCustomers(){let map={};db.orders.forEach(o=>{map[o.customer]=(map[o.customer]||0)+1});let a=Object.entries(map);document.getElementById('customerList').innerHTML=a.length?a.map(([n,c])=>`<div class="card"><b>${esc(n)}</b><div class="meta">${c} đơn hàng</div></div>`).join(''):'<div class="empty">Khách hàng sẽ tự xuất hiện khi bạn tạo đơn.</div>'}
+function renderAll(){let rev=db.orders.filter(o=>o.status!=='Đã hủy').reduce((s,o)=>s+sum(o)+o.shipping-o.discount,0),co=db.orders.filter(o=>o.status!=='Đã hủy').reduce((s,o)=>s+cost(o),0);document.getElementById('statOrders').textContent=db.orders.length;document.getElementById('statRevenue').textContent=yen(rev);document.getElementById('statCost').textContent=yen(co);document.getElementById('statProfit').textContent=yen(rev-co);document.getElementById('recent').innerHTML=db.orders.slice(0,4).map(o=>`<div class="order" style="padding:10px 0;border-bottom:1px solid var(--line)" onclick="openDetail('${o.id}')"><div><b>${esc(o.customer)}</b><div class="meta">${esc(o.code)} · ${esc(o.status)}</div></div><b>${yen(sum(o)+o.shipping-o.discount)}</b></div>`).join('')||'<div class="empty">Chưa có đơn hàng.</div>';renderOrders();renderProducts();renderCustomers()}
+renderAll();showTab('dashboard');
+</script>
+</body></html>
